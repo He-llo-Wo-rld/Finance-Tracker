@@ -5,6 +5,7 @@ import { signIn } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import Logo from "@/components/Logo";
 
 export default function SignUpPage() {
   const [formData, setFormData] = useState({
@@ -84,40 +85,7 @@ export default function SignUpPage() {
       <div className="max-w-md w-full space-y-8">
         <div>
           <div className="mx-auto h-12 w-12 flex items-center justify-center">
-            <svg
-              width="48"
-              height="48"
-              viewBox="0 0 32 32"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <circle cx="16" cy="16" r="16" fill="#2563eb" />
-              <path
-                d="M6 26h20M6 26V6"
-                stroke="white"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-              <rect x="9" y="18" width="3" height="8" fill="white" rx="1" />
-              <rect x="13" y="14" width="3" height="12" fill="white" rx="1" />
-              <rect x="17" y="12" width="3" height="14" fill="white" rx="1" />
-              <rect x="21" y="16" width="3" height="10" fill="white" rx="1" />
-              <path
-                d="m13 10 3-3 3 3"
-                stroke="#10b981"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                fill="none"
-              />
-              <path
-                d="m16 7v6"
-                stroke="#10b981"
-                strokeWidth="2"
-                strokeLinecap="round"
-              />
-            </svg>
+            <Logo size={48} className="" />
           </div>
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
             Create your account
