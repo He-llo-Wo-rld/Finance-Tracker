@@ -1,11 +1,11 @@
 "use client";
 
+import Logo from "@/components/Logo";
 import { Eye, EyeOff, Lock, Mail, User } from "lucide-react";
 import { signIn } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import Logo from "@/components/Logo";
 
 export default function SignUpPage() {
   const [formData, setFormData] = useState({
