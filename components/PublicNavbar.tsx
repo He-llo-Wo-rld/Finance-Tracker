@@ -11,10 +11,6 @@ export default function PublicNavbar() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  // Debug logging
-  console.log("Navbar session:", session);
-  console.log("Navbar status:", status);
-
   // Close dropdown when clicking outside
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {

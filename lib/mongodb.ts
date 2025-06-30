@@ -6,6 +6,10 @@ if (!MONGODB_URI) {
   throw new Error("Please define the MONGODB_URI environment variable");
 }
 
+const mongoUri = MONGODB_URI.includes("?")
+  ? `${MONGODB_URI}&retryWrites=true&w=majority`
+  : `${MONGODB_URI}?retryWrites=true&w=majority`;
+
 let cached = (global as any).mongoose;
 
 if (!cached) {
@@ -20,19 +24,26 @@ async function dbConnect() {
   if (!cached.promise) {
     const opts = {
       bufferCommands: false,
+      serverSelectionTimeoutMS: 5000,
+      socketTimeoutMS: 45000,
+      maxPoolSize: 10,
+      minPoolSize: 1,
     };
 
-    cached.promise = mongoose.connect(MONGODB_URI, opts).then((mongoose) => {
-      return mongoose;
-    });
+    cached.promise = mongoose
+      .connect(mongoUri, opts)
+      .then((mongoose) => {
+        return mongoose;
+      })
+      .catch((error) => {
+        throw error;
+      });
   }
 
   try {
     cached.conn = await cached.promise;
-    console.log("MongoDB connected successfully");
   } catch (e) {
     cached.promise = null;
-    console.error("MongoDB connection error:", e);
     throw e;
   }
 

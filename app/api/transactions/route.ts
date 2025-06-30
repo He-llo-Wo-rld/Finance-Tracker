@@ -6,22 +6,17 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {
   try {
-    console.log("GET /api/transactions called");
     const session = await getServerSession(authOptions);
-    console.log("Session:", session);
 
     if (!session?.user?.id) {
-      console.log("No session or user ID");
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    console.log("User ID:", session.user.id);
     await connectMongoDB();
 
     const transactions = await Transaction.find({
       userId: session.user.id,
     }).sort({ date: -1 });
-    console.log("Found transactions:", transactions.length);
 
     return NextResponse.json(transactions);
   } catch (error) {
@@ -35,23 +30,13 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    console.log("POST /api/transactions called");
     const session = await getServerSession(authOptions);
-    console.log("Session:", session);
 
     if (!session?.user?.id) {
-      console.log("No session or user ID");
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     const { type, amount, category, description, date } = await request.json();
-    console.log("Transaction data:", {
-      type,
-      amount,
-      category,
-      description,
-      date,
-    });
 
     // Validation
     if (!type || !amount || !category || !description || !date) {
@@ -95,7 +80,6 @@ export async function POST(request: NextRequest) {
       userId: session.user.id,
     });
 
-    console.log("Created transaction:", transaction);
     return NextResponse.json(transaction, { status: 201 });
   } catch (error) {
     console.error("Error creating transaction:", error);

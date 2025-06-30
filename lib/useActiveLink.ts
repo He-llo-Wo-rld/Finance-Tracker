@@ -1,6 +1,5 @@
 import { useRouter } from "next/router";
 
-// Hook to check if link is active
 export function useActiveLink() {
   const router = useRouter();
 

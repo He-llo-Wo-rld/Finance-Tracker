@@ -1,4 +1,3 @@
-// Update the import path if the location is different, for example:
 import { authOptions } from "@/lib/auth";
 import connectMongoDB from "@/lib/mongodb";
 import Transaction from "@/models/Transaction";
@@ -26,7 +25,6 @@ export async function DELETE(
 
     await connectMongoDB();
 
-    // Find and delete transaction, ensuring it belongs to the user
     const deletedTransaction = await Transaction.findOneAndDelete({
       _id: id,
       userId: session.user.id,

@@ -17,9 +17,6 @@ import { useSession } from "next-auth/react";
 export default function HomePage() {
   const { data: session, status } = useSession();
 
-  // Allow both authenticated and non-authenticated users to view home
-  // Authenticated users can navigate to analytics via navbar
-
   if (status === "loading") {
     return (
       <div className="min-h-screen flex items-center justify-center">
