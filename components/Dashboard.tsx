@@ -30,7 +30,7 @@ interface DashboardProps {
   transactions: Transaction[];
 }
 
-export default function Dashboard({ transactions }: DashboardProps) {
+export const Dashboard = ({ transactions }: DashboardProps) => {
   const [period, setPeriod] = useState<"monthly" | "yearly">("monthly");
 
   // Helper functions for data processing

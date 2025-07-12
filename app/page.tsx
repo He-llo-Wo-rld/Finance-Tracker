@@ -1,7 +1,7 @@
 "use client";
 
+import { PublicNavbar } from "@/components";
 import DemoAnalytics from "@/components/DemoAnalytics";
-import PublicNavbar from "@/components/PublicNavbar";
 import {
   BarChart3,
   Calculator,

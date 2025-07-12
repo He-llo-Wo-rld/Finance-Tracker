@@ -8,26 +8,19 @@ export async function POST(request: NextRequest) {
     const { email } = await request.json();
 
     if (!email) {
-      return NextResponse.json(
-        { error: "Email є обов'язковим" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Email is required" }, { status: 400 });
     }
 
-    // Check if user exists
     const existingUser = await User.findOne({
       email: email.toLowerCase().trim(),
     });
 
     return NextResponse.json({
       exists: !!existingUser,
-      message: existingUser ? "Email вже використовується" : "Email доступний",
+      message: existingUser ? "Email is already in use" : "Email is available",
     });
   } catch (error) {
     console.error("Email check error:", error);
-    return NextResponse.json(
-      { error: "Помилка перевірки email" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Email check error" }, { status: 500 });
   }
 }

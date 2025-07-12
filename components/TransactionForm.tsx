@@ -6,7 +6,7 @@ interface TransactionFormProps {
   onSuccess: () => void;
 }
 
-export default function TransactionForm({ onSuccess }: TransactionFormProps) {
+export const TransactionForm = ({ onSuccess }: TransactionFormProps) => {
   const [formData, setFormData] = useState({
     type: "expense" as "income" | "expense",
     amount: "",

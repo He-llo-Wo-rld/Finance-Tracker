@@ -7,17 +7,16 @@ export async function POST(request: NextRequest) {
   try {
     const { name, email, password } = await request.json();
 
-    // Validation
     if (!name || !email || !password) {
       return NextResponse.json(
-        { error: "Всі поля є обов'язковими" },
+        { error: "All fields are required" },
         { status: 400 }
       );
     }
 
     if (name.length < 2) {
       return NextResponse.json(
-        { error: "Ім'я повинно містити мінімум 2 символи" },
+        { error: "Name must be at least 2 characters" },
         { status: 400 }
       );
     }
@@ -25,35 +24,32 @@ export async function POST(request: NextRequest) {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       return NextResponse.json(
-        { error: "Невірний формат email" },
+        { error: "Invalid email format" },
         { status: 400 }
       );
     }
 
     if (password.length < 6) {
       return NextResponse.json(
-        { error: "Пароль повинен містити мінімум 6 символів" },
+        { error: "Password must be at least 6 characters" },
         { status: 400 }
       );
     }
 
     await connectMongoDB();
 
-    // Check if user already exists
     const existingUser = await User.findOne({
       email: email.toLowerCase(),
     });
     if (existingUser) {
       return NextResponse.json(
-        { error: "Користувач з таким email вже існує" },
+        { error: "A user with this email already exists" },
         { status: 400 }
       );
     }
 
-    // Hash password
     const hashedPassword = await bcrypt.hash(password, 12);
 
-    // Create user
     const user = await User.create({
       name: name.trim(),
       email: email.toLowerCase().trim(),
@@ -61,10 +57,9 @@ export async function POST(request: NextRequest) {
       provider: "credentials",
     });
 
-    // Return success without password
     return NextResponse.json(
       {
-        message: "Користувач успішно створений",
+        message: "User created successfully",
         user: {
           id: user._id,
           name: user.name,
@@ -75,6 +70,6 @@ export async function POST(request: NextRequest) {
     );
   } catch (error) {
     console.error("Registration error:", error);
-    return NextResponse.json({ error: "Помилка сервера" }, { status: 500 });
+    return NextResponse.json({ error: "Server error" }, { status: 500 });
   }
 }

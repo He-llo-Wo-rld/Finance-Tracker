@@ -21,11 +21,11 @@ interface TransactionListProps {
 
 const ITEMS_PER_PAGE = 10;
 
-export default function TransactionList({
+export const TransactionList = ({
   transactions,
   loading,
   onUpdate,
-}: TransactionListProps) {
+}: TransactionListProps) => {
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
