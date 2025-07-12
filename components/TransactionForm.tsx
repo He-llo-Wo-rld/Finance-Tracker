@@ -1,58 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useTransactionForm } from "@/hooks";
 
 interface TransactionFormProps {
   onSuccess: () => void;
 }
 
 export const TransactionForm = ({ onSuccess }: TransactionFormProps) => {
-  const [formData, setFormData] = useState({
-    type: "expense" as "income" | "expense",
-    amount: "",
-    category: "",
-    description: "",
-    date: new Date().toISOString().split("T")[0], // Today's date in YYYY-MM-DD format
-  });
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    setError("");
-
-    try {
-      const response = await fetch("/api/transactions", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          ...formData,
-          amount: parseFloat(formData.amount),
-        }),
-      });
-
-      if (response.ok) {
-        setFormData({
-          type: "expense",
-          amount: "",
-          category: "",
-          description: "",
-          date: new Date().toISOString().split("T")[0],
-        });
-        onSuccess();
-      } else {
-        const data = await response.json();
-        setError(data.error || "Failed to add transaction");
-      }
-    } catch (error) {
-      setError("Network error");
-    } finally {
-      setLoading(false);
-    }
-  };
+  const { formData, setFormData, loading, error, handleSubmit } =
+    useTransactionForm(onSuccess);
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
@@ -199,4 +155,4 @@ export const TransactionForm = ({ onSuccess }: TransactionFormProps) => {
       </button>
     </form>
   );
-}
+};

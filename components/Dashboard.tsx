@@ -1,5 +1,7 @@
 "use client";
 
+import { Transaction } from "@/types/analytics";
+import { getCategoryData, getMonthlyData, getStats } from "@/utils/analytics";
 import { useState } from "react";
 import {
   Bar,
@@ -17,88 +19,16 @@ import {
   YAxis,
 } from "recharts";
 
-interface Transaction {
-  _id: string;
-  type: "income" | "expense";
-  amount: number;
-  category: string;
-  description: string;
-  date: string;
-}
-
 interface DashboardProps {
   transactions: Transaction[];
 }
 
 export const Dashboard = ({ transactions }: DashboardProps) => {
   const [period, setPeriod] = useState<"monthly" | "yearly">("monthly");
-
-  // Helper functions for data processing
-  const getMonthlyData = (
-    transactions: Transaction[],
-    period: "monthly" | "yearly" = "monthly"
-  ) => {
-    const groupedData = transactions.reduce((acc, transaction) => {
-      const date = new Date(transaction.date);
-      const key =
-        period === "monthly"
-          ? `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(
-              2,
-              "0"
-            )}`
-          : `${date.getFullYear()}`;
-
-      if (!acc[key]) {
-        acc[key] = { period: key, income: 0, expenses: 0 };
-      }
-
-      if (transaction.type === "income") {
-        acc[key].income += transaction.amount;
-      } else {
-        acc[key].expenses += transaction.amount;
-      }
-
-      return acc;
-    }, {} as Record<string, { period: string; income: number; expenses: number }>);
-
-    return Object.values(groupedData).sort((a, b) =>
-      a.period.localeCompare(b.period)
-    );
-  };
-
-  const getCategoryData = (
-    transactions: Transaction[],
-    type: "income" | "expense"
-  ) => {
-    const filteredTransactions = transactions.filter((t) => t.type === type);
-
-    const groupedData = filteredTransactions.reduce((acc, transaction) => {
-      if (!acc[transaction.category]) {
-        acc[transaction.category] = 0;
-      }
-      acc[transaction.category] += transaction.amount;
-      return acc;
-    }, {} as Record<string, number>);
-
-    return Object.entries(groupedData).map(([category, total]) => ({
-      category,
-      total,
-    }));
-  };
-
-  // Process transaction data
+  const { totalIncome, totalExpenses, balance } = getStats(transactions);
   const monthlyData = getMonthlyData(transactions, period);
   const incomeByCategory = getCategoryData(transactions, "income");
   const expenseByCategory = getCategoryData(transactions, "expense");
-
-  // Calculate totals
-  const totalIncome = transactions
-    .filter((t) => t.type === "income")
-    .reduce((sum, t) => sum + t.amount, 0);
-  const totalExpenses = transactions
-    .filter((t) => t.type === "expense")
-    .reduce((sum, t) => sum + t.amount, 0);
-  const netBalance = totalIncome - totalExpenses;
 
   const COLORS = [
     "#3b82f6",
@@ -304,47 +234,23 @@ export const Dashboard = ({ transactions }: DashboardProps) => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <div className="text-center">
             <p className="text-2xl font-bold text-green-600">
-              £
-              {transactions
-                .filter((t) => t.type === "income")
-                .reduce((sum, t) => sum + t.amount, 0)
-                .toFixed(2)}
+              £{totalIncome.toFixed(2)}
             </p>
             <p className="text-sm text-gray-600">Total Income</p>
           </div>
           <div className="text-center">
             <p className="text-2xl font-bold text-rose-600">
-              £
-              {transactions
-                .filter((t) => t.type === "expense")
-                .reduce((sum, t) => sum + t.amount, 0)
-                .toFixed(2)}
+              £{totalExpenses.toFixed(2)}
             </p>
             <p className="text-sm text-gray-600">Total Expenses</p>
           </div>
           <div className="text-center">
             <p
               className={`text-2xl font-bold ${
-                transactions
-                  .filter((t) => t.type === "income")
-                  .reduce((sum, t) => sum + t.amount, 0) -
-                  transactions
-                    .filter((t) => t.type === "expense")
-                    .reduce((sum, t) => sum + t.amount, 0) >=
-                0
-                  ? "text-green-600"
-                  : "text-rose-600"
+                balance >= 0 ? "text-green-600" : "text-rose-600"
               }`}
             >
-              £
-              {(
-                transactions
-                  .filter((t) => t.type === "income")
-                  .reduce((sum, t) => sum + t.amount, 0) -
-                transactions
-                  .filter((t) => t.type === "expense")
-                  .reduce((sum, t) => sum + t.amount, 0)
-              ).toFixed(2)}
+              £{balance.toFixed(2)}
             </p>
             <p className="text-sm text-gray-600">Net Balance</p>
           </div>
@@ -358,4 +264,4 @@ export const Dashboard = ({ transactions }: DashboardProps) => {
       </div>
     </div>
   );
-}
+};

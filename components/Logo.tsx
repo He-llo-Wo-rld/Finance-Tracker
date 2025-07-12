@@ -27,7 +27,6 @@ export default function Logo({ size = 32, className = "" }: LogoProps) {
   );
 }
 
-// Варіант для favicon - квадратна іконка
 export function LogoIcon({ size = 24, className = "" }: LogoProps) {
   const [imageError, setImageError] = useState(false);
 
@@ -48,7 +47,6 @@ export function LogoIcon({ size = 24, className = "" }: LogoProps) {
   );
 }
 
-// Fallback SVG якщо зображення не завантажується
 export function LogoSVG({ size = 32, className = "" }: LogoProps) {
   return (
     <svg

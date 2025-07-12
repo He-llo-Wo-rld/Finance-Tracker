@@ -25,7 +25,6 @@ import {
 export default function DemoAnalytics() {
   const [period, setPeriod] = useState<"monthly" | "yearly">("monthly");
 
-  // Process demo data
   const monthlyData = getMonthlyData(demoTransactions, period);
   const incomeByCategory = getCategoryData(demoTransactions, "income", period);
   const expenseByCategory = getCategoryData(
@@ -34,7 +33,6 @@ export default function DemoAnalytics() {
     period
   );
 
-  // Prepare data for charts
   const categoryIncomeData = Object.entries(incomeByCategory).map(
     ([category, periods]: [string, any]) => ({
       category,

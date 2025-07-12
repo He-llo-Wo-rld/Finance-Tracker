@@ -11,7 +11,6 @@ export const PublicNavbar = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  // Close dropdown when clicking outside
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (
@@ -62,7 +61,6 @@ export const PublicNavbar = () => {
           <div className="flex items-center space-x-4">
             {session ? (
               <div className="relative" ref={dropdownRef}>
-                {/* Profile Button */}
                 <button
                   onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                   className="flex items-center space-x-3 px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors"

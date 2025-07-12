@@ -37,7 +37,7 @@ const TransactionSchema = new Schema<ITransaction>(
       default: Date.now,
     },
     userId: {
-      type: String, // Changed to String to handle both OAuth and regular user IDs
+      type: String, 
       required: true,
     },
   },

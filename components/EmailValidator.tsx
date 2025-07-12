@@ -1,4 +1,3 @@
-// Utility component for real-time email validation
 "use client";
 
 import { useState } from "react";
@@ -20,7 +19,6 @@ export default function EmailValidator({
       return;
     }
 
-    // Check format first
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(emailToCheck)) {
       onValidationChange(false, "Невірний формат email");
@@ -30,7 +28,6 @@ export default function EmailValidator({
     setIsChecking(true);
 
     try {
-      // Check if email exists in database
       const response = await fetch("/api/auth/check-email", {
         method: "POST",
         headers: {
@@ -47,16 +44,15 @@ export default function EmailValidator({
           data.exists ? "Email вже використовується" : "Email доступний"
         );
       } else {
-        onValidationChange(true, ""); // If check fails, allow user to proceed
+        onValidationChange(true, "");
       }
     } catch (error) {
-      onValidationChange(true, ""); // If check fails, allow user to proceed
+      onValidationChange(true, "");
     } finally {
       setIsChecking(false);
     }
   };
 
-  // Debounced validation
   useState(() => {
     const timer = setTimeout(() => {
       if (email) {

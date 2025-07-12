@@ -10,12 +10,12 @@ interface PaginationProps {
   loading?: boolean;
 }
 
-export default function Pagination({
+export const Pagination = ({
   currentPage,
   totalPages,
   onPageChange,
   loading = false,
-}: PaginationProps) {
+}: PaginationProps) => {
   const [isChanging, setIsChanging] = useState(false);
 
   const handlePageChange = async (page: number) => {
@@ -23,14 +23,11 @@ export default function Pagination({
 
     setIsChanging(true);
     onPageChange(page);
-
-    // Reset changing state after a short delay
     setTimeout(() => setIsChanging(false), 300);
   };
 
-  // Generate page numbers for mobile (show fewer pages)
   const getVisiblePages = () => {
-    const delta = window.innerWidth < 768 ? 1 : 2; // Show fewer pages on mobile
+    const delta = window.innerWidth < 768 ? 1 : 2;
     const range = [];
     const rangeWithDots = [];
 

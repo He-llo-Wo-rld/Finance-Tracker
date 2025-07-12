@@ -1,17 +1,9 @@
 "use client";
 
+import { useTransactionList } from "@/hooks";
+import { Transaction } from "@/types/analytics";
 import { Check, Trash2, X } from "lucide-react";
-import { useState } from "react";
-import Pagination from "./Pagination";
-
-interface Transaction {
-  _id: string;
-  type: "income" | "expense";
-  amount: number;
-  category: string;
-  description: string;
-  date: string;
-}
+import { Pagination } from "./Pagination";
 
 interface TransactionListProps {
   transactions: Transaction[];
@@ -26,56 +18,21 @@ export const TransactionList = ({
   loading,
   onUpdate,
 }: TransactionListProps) => {
-  const [deletingId, setDeletingId] = useState<string | null>(null);
-  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
-  const [currentPage, setCurrentPage] = useState(1);
+  const {
+    deletingId,
+    confirmDeleteId,
+    currentPage,
+    deleteTransaction,
+    handleDeleteClick,
+    cancelDelete,
+    handlePageChange,
+  } = useTransactionList(transactions, onUpdate, ITEMS_PER_PAGE);
 
   const totalPages = Math.ceil(transactions.length / ITEMS_PER_PAGE);
-  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-  const endIndex = startIndex + ITEMS_PER_PAGE;
-  const currentTransactions = transactions.slice(startIndex, endIndex);
-
-  const deleteTransaction = async (id: string) => {
-    setDeletingId(id);
-    try {
-      const response = await fetch(`/api/transactions/${id}`, {
-        method: "DELETE",
-      });
-
-      if (response.ok) {
-        onUpdate();
-        setConfirmDeleteId(null);
-
-        // Adjust current page if we deleted the last item on the page
-        const newTotal = transactions.length - 1;
-        const newTotalPages = Math.ceil(newTotal / ITEMS_PER_PAGE);
-        if (currentPage > newTotalPages && newTotalPages > 0) {
-          setCurrentPage(newTotalPages);
-        }
-      } else {
-        const data = await response.json();
-        alert(data.error || "Failed to delete transaction");
-      }
-    } catch (error) {
-      alert("Network error");
-    } finally {
-      setDeletingId(null);
-    }
-  };
-
-  const handleDeleteClick = (id: string) => {
-    setConfirmDeleteId(id);
-  };
-
-  const cancelDelete = () => {
-    setConfirmDeleteId(null);
-  };
-
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-    setConfirmDeleteId(null); // Clear any pending confirmations
-  };
-
+  const currentTransactions = transactions.slice(
+    (currentPage - 1) * ITEMS_PER_PAGE,
+    currentPage * ITEMS_PER_PAGE
+  );
   if (loading) {
     return (
       <div className="bg-white rounded-lg shadow-md p-6">
@@ -142,7 +99,6 @@ export const TransactionList = ({
 
                   <div className="ml-4 flex items-center space-x-2 flex-shrink-0">
                     {confirmDeleteId === transaction._id ? (
-                      // Inline confirmation
                       <div className="flex items-center space-x-2 bg-white px-3 py-1 rounded-lg border border-rose-300">
                         <span className="text-sm text-gray-700 hidden sm:inline">
                           Delete?
@@ -185,7 +141,6 @@ export const TransactionList = ({
         )}
       </div>
 
-      {/* Pagination */}
       {totalPages > 1 && (
         <Pagination
           currentPage={currentPage}
@@ -196,4 +151,4 @@ export const TransactionList = ({
       )}
     </div>
   );
-}
+};

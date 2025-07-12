@@ -2,10 +2,10 @@ import mongoose, { Document, Schema } from "mongoose";
 
 export interface IUser extends Document {
   email: string;
-  password?: string; // Optional for OAuth users
+  password?: string;
   name: string;
-  image?: string; // For profile picture
-  provider?: string; // 'credentials' or 'google'
+  image?: string; 
+  provider?: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -31,7 +31,7 @@ const UserSchema = new Schema<IUser>(
     },
     password: {
       type: String,
-      required: false, // Not required for OAuth users
+      required: false,
     },
     provider: {
       type: String,
